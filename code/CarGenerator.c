@@ -7,13 +7,11 @@ typedef struct{
     double ambProb;
 } domain;
 
-void* CarGenerator(void *arg){
-    domain *ps = (domain*)arg;
+void* CarGenerator(double mu, double l, double u, double p){
     while(1){
-        sleep(-mu*log(1-prob()));
-
-
-
+        double w = -mu*log(1-prob());
+        sleep(w);
+        printf("%lf\n", w);
     }
 }
 
