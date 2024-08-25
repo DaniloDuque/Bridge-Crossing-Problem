@@ -1,11 +1,7 @@
 TARGET = main
-
 CC = gcc
-
 CFLAGS = -Wall -g -pthread
-
 SRCS = Main.c
-
 OBJS = $(SRCS:.c=.o)
 
 all: $(TARGET)
