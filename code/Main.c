@@ -1,5 +1,4 @@
 #include "CarGenerator.c" 
-#include <pthread.h>
 
 int mode, sz, k_i, k_j;
 double mu_i, mu_j, t_si, t_sj, lbv_i, ubv_i, lbv_j, ubv_j, ambProb_i, ambProb_j;

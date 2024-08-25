@@ -11,27 +11,39 @@
 2. **Integer**: `Bridge Length`  
    Specifies the length of the bridge.
 
-3. **Real**: `Average Car Spawning Time`  
-   The mean time interval between car arrivals.
+3. **Real**: `Average Left Side Car Spawning Time`  
+   The mean time interval between car arrivals on the left side.
 
-4. **Real**: `Lower Bound Velocity of Cars`  
-   The minimum velocity at which cars travel.
+4. **Real**: `Average Right Side Car Spawning Time`  
+   The mean time interval between car arrivals on the right side.
 
-5. **Real**: `Upper Bound Velocity of Cars`  
-   The maximum velocity at which cars travel.
+5. **Real**: `Lower Bound Velocity of Left Side Cars`  
+   The minimum velocity at which left-side cars travel.
 
-6. **Real in [0, 1]**: `Probability of Ambulance`  
-   The probability of an ambulance appearing.
+6. **Real**: `Upper Bound Velocity of Left Side Cars`  
+   The maximum velocity at which left-side cars travel.
+
+7. **Real**: `Lower Bound Velocity of Right Side Cars`  
+   The minimum velocity at which right-side cars travel.
+
+8. **Real**: `Upper Bound Velocity of Right Side Cars`  
+   The maximum velocity at which right-side cars travel.
+
+9. **Real [0, 1]**: `Probability of Left Side Ambulance`  
+   The probability of an ambulance appearing on the left side.
+
+10. **Real [0, 1]**: `Probability of Right Side Ambulance`  
+    The probability of an ambulance appearing on the right side.
 
 ### Mode-Specific Parameters
 
 **Mode Semaphore:**
 
-- **Real**: `Semaphore_i Duration (Green Time)`  
-  The duration of the green light for Semaphore \(i\).
+- **Real**: `Left Semaphore Duration (Green Time)`  
+  The duration of the green light for the left semaphore.
 
-- **Real**: `Semaphore_j Duration (Green Time)`  
-  The duration of the green light for Semaphore \(j\).
+- **Real**: `Right Semaphore Duration (Green Time)`  
+  The duration of the green light for the right semaphore.
 
 **Mode Traffic:**
 
