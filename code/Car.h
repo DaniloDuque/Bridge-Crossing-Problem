@@ -10,6 +10,7 @@ struct Car{
         w = -mu*log(1-prob());
         v = rrand(lbv, upv);
         ambulance = (prob()<ambProb);
+
     }
 
 };

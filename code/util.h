@@ -8,7 +8,7 @@
 #include <math.h> 
 
 
-#define prob() ((double)rand()/RAND_MAX)
+#define prob() ((double)rand()/(RAND_MAX+1))
 #define rrand(i, j) ((i)+prob()*((j)-(i)))
 
 #endif 
