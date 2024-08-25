@@ -7,8 +7,9 @@
 #include <time.h>
 #include <math.h> 
 #include <stdbool.h>
+#include <unistd.h>
 
-#define prob() ((double)rand()/(RAND_MAX))
+#define prob() (drand48())
 #define rrand(i, j) ((i)+prob()*((j)-(i)))
 
 #endif 
