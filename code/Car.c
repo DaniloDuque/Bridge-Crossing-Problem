@@ -1,16 +1,14 @@
 #include "util.h"
 
-
-struct Car{
+typedef struct{
     
     double v, w; //Cars velocity, and time till spawn
-    bool ambulance;
+    int ambulance;
 
     void init(double mu, double lbv, double upv, double ambProb){
         w = -mu*log(1-prob());
         v = rrand(lbv, upv);
         ambulance = (prob()<ambProb);
-
     }
 
-};
+} Car;

@@ -6,9 +6,9 @@
 #include <stdlib.h>  
 #include <time.h>
 #include <math.h> 
+#include <stdbool.h>
 
-
-#define prob() ((double)rand()/(RAND_MAX+1))
+#define prob() ((double)rand()/(RAND_MAX))
 #define rrand(i, j) ((i)+prob()*((j)-(i)))
 
 #endif 
