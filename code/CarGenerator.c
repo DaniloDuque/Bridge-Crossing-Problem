@@ -14,4 +14,3 @@ void* CarGenerator(double mu, double l, double u, double p){
         printf("%lf\n", w);
     }
 }
-

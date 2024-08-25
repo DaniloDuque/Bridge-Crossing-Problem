@@ -40,4 +40,3 @@ int main() {
     (!mode)? Carnage() : (mode==1)? Semaphore() : Traffic();
     return 0;
 }
-
