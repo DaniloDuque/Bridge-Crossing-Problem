@@ -1,7 +1,7 @@
 #include "util.h"
 
 typedef struct{
-    double v; //Cars velocity, and time till spawn
+    double v;
     int ambulance;
 } Car;
 
@@ -13,9 +13,3 @@ Car *CreateCar(double l, double u, double p){
     return c;
 }
 
-void* CrossBridge(void *arg){
-    Car* car = (Car*)arg;
-    if(car->ambulance) puts("ambulance is crossing the bridge!");
-    else puts("car is crossing the brige!");
-    return 0;
-}
