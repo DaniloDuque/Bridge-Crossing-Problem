@@ -7,23 +7,22 @@ int id = 1;
 
 typedef struct{
     int dir;
-    double mu;
-    double lbv;
-    double ubv;
-    double ambProb;
+    double mu, lbv, ubv, ambProb;
 } domain;
 
 void* CrossBridge(void *arg){
     Car* car = (Car*)arg;
-    pthread_mutex_lock(&cz->bridge[(car->dir == 1)? 0 : cz->sz+1].scnd);
-    pthread_mutex_unlock(&cz->bridge[(car->dir == 1)? 0 : cz->sz+1].scnd);
-    for(int i = (car->dir == 1)? 1 : cz->sz; (car->dir == 1)? i<=cz->sz : i>=1; i+=car->dir){
+    int start = (car->dir == 1)? 1: cz->sz, end = (start == 1)? cz->sz : 1;
+    pthread_mutex_lock(&cz->bridge[start-car->dir].scnd);
+    for(int i = start; i != end+car->dir; i+=car->dir){
         pthread_mutex_lock(&cz->bridge[i].scnd);
+        cz->bridge[i-car->dir].frst = 0;
+        pthread_mutex_unlock(&cz->bridge[i-car->dir].scnd);
         cz->bridge[i].frst = car->id;
-        sleep(1/car->v);
-        cz->bridge[i].frst = 0;
-        pthread_mutex_unlock(&cz->bridge[i].scnd);
-    }return 0;
+        usleep(1*micro/car->v);
+    }cz->bridge[end].frst = 0;
+    pthread_mutex_unlock(&cz->bridge[end].scnd);
+    return 0;
 }
 
 void CreateCar(double l, double u, double p, int d){
@@ -39,8 +38,7 @@ void CreateCar(double l, double u, double p, int d){
 
 void* CarGenerator(double mu, double l, double u, double p, int d){
     while(1){
-        double w = -mu*log(1-prob());
-        sleep(w);
+        sleep(-mu*log(1-prob()));
         CreateCar(l, u, p, d);
    }
 }
@@ -54,7 +52,7 @@ void* run_car_generator(void* arg) {
 void INIT(int sz, double m_i, double m_j, double l_i, double u_i, double l_j, double u_j , double p_i, double p_j) {
     cz = init(sz);
     pthread_t threads[3];
-    domain lft = {m_i, l_i, u_i, p_i, 1}, rght = {m_j, l_j, u_j, p_j, -1};
+    domain lft = {1, m_i, l_i, u_i, p_i}, rght = {-1, m_j, l_j, u_j, p_j};
     pthread_create(&threads[0], NULL, run_car_generator, (void*)&lft);
     pthread_create(&threads[1], NULL, run_car_generator, (void*)&rght);
     pthread_create(&threads[2], NULL, print, (void*)cz);

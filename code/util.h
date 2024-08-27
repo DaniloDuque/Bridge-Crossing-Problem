@@ -11,6 +11,7 @@
 
 #define prob() (drand48())
 #define rrand(i, j) ((i)+prob()*((j)-(i)))
+#define micro 1e6
 
 #endif 
 
