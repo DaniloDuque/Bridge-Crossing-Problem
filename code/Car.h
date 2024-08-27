@@ -4,7 +4,7 @@
 #include "util.h"
 
 typedef struct{
-    int dir;
+    int dir, id;
     double v;
     int ambulance;
 } Car;
