@@ -8,10 +8,11 @@
 #include <math.h> 
 #include <stdbool.h>
 #include <unistd.h>
+#include <semaphore.h>
 
 #define prob() (drand48())
 #define rrand(i, j) ((i)+prob()*((j)-(i)))
-#define micro 1e6
+#define micro 1000000
 
 #endif 
 

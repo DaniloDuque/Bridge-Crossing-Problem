@@ -38,7 +38,7 @@ void CreateCar(double l, double u, double p, int d){
 
 void* CarGenerator(double mu, double l, double u, double p, int d){
     while(1){
-        sleep(-mu*log(1-prob()));
+        usleep(-mu*log(1-prob())*micro);
         CreateCar(l, u, p, d);
    }
 }
