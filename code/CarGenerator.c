@@ -16,7 +16,7 @@ void* CrossBridge(void *arg){
     Car* car = (Car*)arg;
     int start = (car->dir == 1) ? 1 : cz->sz;
     int end = (start == 1) ? cz->sz : 1;
-    lock(&bridge_mutex); lock(&cz->bridge[start-car->dir].scnd);
+    lock(&cz->bridge[start-car->dir].scnd); lock(&bridge_mutex); 
     while ((car->dir == 1) ? cz->dir < 0 : cz->dir > 0) pthread_cond_wait(&empty, &bridge_mutex);
     cz->dir += car->dir;  
     unlock(&bridge_mutex);
