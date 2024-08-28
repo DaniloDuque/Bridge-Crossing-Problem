@@ -1,5 +1,6 @@
 #include "Bridge.h"
-void *print(void *arg) {
+
+void *UICarnage(void *arg) {
     Bridge *b = (Bridge *)arg;
     while (1) {
         usleep(micro / 10);
@@ -19,3 +20,14 @@ void *print(void *arg) {
     }
 }
 
+void *UISemaphore(void *arg){
+    while(1){
+
+    }
+}
+
+void *UITraffic(void * arg){
+    while(1){
+
+    }
+}

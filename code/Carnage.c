@@ -1,13 +1,11 @@
 #include "Car.h"
-#include "UI.c"
 #include "Bridge.h"
-#include "util.h"
 
-Bridge* cz;
+extern Bridge* cz;
 pthread_mutex_t bridge_mutex;  
 pthread_cond_t empty;  
 
-void *CrossBridgeAmbulance(void *arg){
+void *CrossCarnageAmbulance(void *arg){
     Car* amb = (Car*)arg;
     int start = (amb->dir==1)? 1 : cz->sz, end = (start==1)? cz->sz : 1;
     lock(&cz->bridge[start-amb->dir].scnd); lock(&bridge_mutex); ++cz->amb_waiting;
@@ -27,7 +25,7 @@ void *CrossBridgeAmbulance(void *arg){
     return 0;
 }
 
-void* CrossBridgeCar(void *arg){
+void* CrossCarnageCar(void *arg){
     Car* car = (Car*)arg;
     int start = (car->dir==1)? 1 : cz->sz, end = (start==1)? cz->sz : 1;
     lock(&cz->bridge[start-car->dir].scnd); lock(&bridge_mutex); 
@@ -47,24 +45,17 @@ void* CrossBridgeCar(void *arg){
     return 0;
 }
 
-void CreateCar(double l, double u, double p, int d){
-    Car * c = (Car*)malloc(sizeof(Car));
-    c->v = rrand(l, u);
-    c->dir = d;
-    pthread_t t;
-    pthread_create(&t, 0, (prob()<p)? CrossBridgeAmbulance : CrossBridgeCar, (void*)c);
-    pthread_detach(t);
-}
-
-void* CarGenerator(double mu, double l, double u, double p, int d){
+void* CarnageCarGenerator(double mu, double l, double u, double p, int d){
     while(1){
         usleep(-mu*log(1-prob())*micro);
-        CreateCar(l, u, p, d);
-   }
+        pthread_t t;
+        pthread_create(&t, 0, (prob()<p)? CrossCarnageAmbulance : CrossCarnageCar, (void*)CreateCar(l, u, p, d));
+        pthread_detach(t);
+    }
 }
 
-void* run_car_generator(void* arg) {
+void* run_generator_Carnage(void* arg) {
     domain* dom = (domain*)arg;
-    CarGenerator(dom->mu, dom->lbv, dom->ubv, dom->ambProb, dom->dir);
+    CarnageCarGenerator(dom->mu, dom->lbv, dom->ubv, dom->ambProb, dom->dir);
     return 0;
 }
