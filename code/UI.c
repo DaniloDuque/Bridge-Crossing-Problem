@@ -1,11 +1,21 @@
 #include "Bridge.h"
-
-void *print(void * arg){
-    Bridge *b = (Bridge*)arg;
-    while(1){
-        usleep(micro/10);
+void *print(void *arg) {
+    Bridge *b = (Bridge *)arg;
+    while (1) {
+        usleep(micro / 10);
         system("clear");
-        for(int i = 1; i<=b->sz; ++i) (b->bridge[i].frst)? printf("%c ", (b->bridge[i].frst == 2)? 'A' : 'C') : printf("_ ");
-        puts("");
+        printf("+");
+        for (int i = 0; i <= b->sz + 3; ++i) printf("--");
+        printf("+\n");
+        printf("| ");
+        printf((b->amb_waiting) ? RED "A" COLOR_RESET : GREEN "C" COLOR_RESET);
+        printf(" | ");
+        for (int i = 1; i <= b->sz; ++i) printf((b->bridge[i].frst==2)? "A " : (b->bridge[i].frst)? "C " : "_ ");
+        printf("| " );
+        printf((b->amb_waiting) ? RED "A" COLOR_RESET : GREEN "C" COLOR_RESET);
+        printf("|\n+");
+        for (int i = 0; i <= b->sz + 3; ++i) printf("--");
+        printf("+\n");
     }
 }
+

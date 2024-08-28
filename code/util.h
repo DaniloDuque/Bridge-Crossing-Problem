@@ -15,6 +15,9 @@
 #define micro 1000000
 #define lock(x) (pthread_mutex_lock(x))
 #define unlock(x) (pthread_mutex_unlock(x))
+#define RED    "\x1b[41m"  
+#define GREEN  "\x1b[42m" 
+#define COLOR_RESET  "\x1b[0m"   
 
 #endif 
 
