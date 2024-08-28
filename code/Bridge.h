@@ -15,8 +15,7 @@ typedef struct {
 
 Bridge* init(int n){
     Bridge *b = (Bridge*)malloc(sizeof(Bridge));
-    b->sz = n;
-    b->dir = 0;
+    b->sz = n; b->dir = 0;
     b->bridge = (mtx*)malloc((n+2)*sizeof(mtx));
     for(int i = 0; i<n+2; ++i) b->bridge[i].frst = 0, pthread_mutex_init(&b->bridge[i].scnd, NULL);
     pthread_mutex_init(&b->access, 0);

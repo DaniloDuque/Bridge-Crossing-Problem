@@ -4,6 +4,8 @@
 
 Bridge* cz;
 int id = 1;
+pthread_mutex_t bridge_mutex;  
+pthread_cond_t empty;  
 
 typedef struct{
     int dir;
@@ -12,15 +14,22 @@ typedef struct{
 
 void* CrossBridge(void *arg){
     Car* car = (Car*)arg;
-    int start = (car->dir == 1)? 1: cz->sz, end = (start == 1)? cz->sz : 1;
-    pthread_mutex_lock(&cz->bridge[start-car->dir].scnd);
-    for(int i = start; i != end+car->dir; i+=car->dir){
+    int start = (car->dir == 1) ? 1 : cz->sz;
+    int end = (start == 1) ? cz->sz : 1;
+    pthread_mutex_lock(&bridge_mutex);
+    while ((car->dir == 1) ? cz->dir < 0 : cz->dir > 0) pthread_cond_wait(&empty, &bridge_mutex);
+    cz->dir += car->dir;  
+    pthread_mutex_unlock(&bridge_mutex);
+    for (int i = start; i != end + car->dir; i += car->dir) {
         pthread_mutex_lock(&cz->bridge[i].scnd);
-        cz->bridge[i-car->dir].frst = 0;
-        pthread_mutex_unlock(&cz->bridge[i-car->dir].scnd);
+        cz->bridge[i - car->dir].frst = 0;
+        pthread_mutex_unlock(&cz->bridge[i - car->dir].scnd);
         cz->bridge[i].frst = car->id;
-        usleep(1*micro/car->v);
-    }cz->bridge[end].frst = 0;
+        usleep(1 * micro / car->v);
+    }pthread_mutex_lock(&bridge_mutex);
+    cz->dir -= car->dir; cz->bridge[end].frst=0;  
+    if (cz->dir == 0) pthread_cond_broadcast(&empty);
+    pthread_mutex_unlock(&bridge_mutex);
     pthread_mutex_unlock(&cz->bridge[end].scnd);
     return 0;
 }
