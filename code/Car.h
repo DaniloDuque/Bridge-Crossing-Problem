@@ -4,9 +4,13 @@
 #include "util.h"
 
 typedef struct{
-    int dir, id;
+    int dir;
     double v;
-    int ambulance;
 } Car;
+
+typedef struct{
+    int dir;
+    double mu, lbv, ubv, ambProb;
+} domain;
 
 #endif // !CAR_H
