@@ -29,7 +29,7 @@ void* CrossCarnageCar(void *arg){
     Car* car = (Car*)arg;
     int start = (car->dir==1)? 1 : cz->sz, end = (start==1)? cz->sz : 1;
     lock(&cz->bridge[start-car->dir].scnd); lock(&bridge_mutex); 
-    while(cz->amb_waiting || (car->dir == 1) ? cz->dir < 0 : cz->dir > 0) pthread_cond_wait(&empty, &bridge_mutex);
+    while(cz->amb_waiting || ((car->dir == 1) ? cz->dir < 0 : cz->dir > 0)) pthread_cond_wait(&empty, &bridge_mutex);
     cz->dir += car->dir;  
     unlock(&bridge_mutex);
     for (int i = start; i!=end+car->dir; i += car->dir) {
