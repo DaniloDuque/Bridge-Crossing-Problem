@@ -8,7 +8,7 @@ typedef struct{
 } mtx;
 
 typedef struct {
-    int sz, dir, amb_waiting;
+    int sem, sz, dir, amb_waiting;
     pthread_mutex_t access;
     mtx *bridge;
 } Bridge;
