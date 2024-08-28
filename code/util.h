@@ -13,6 +13,8 @@
 #define prob() (drand48())
 #define rrand(i, j) ((i)+prob()*((j)-(i)))
 #define micro 1000000
+#define lock(x) (pthread_mutex_lock(x))
+#define unlock(x) (pthread_mutex_unlock(x))
 
 #endif 
 
