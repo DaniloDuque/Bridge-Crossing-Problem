@@ -19,8 +19,8 @@ void *CrossSemaphoreAmbulance(void *arg){
     Car* amb = (Car*)arg;
     int start = (amb->dir==1)? 1 : cz->sz, end = (start==1)? cz->sz : 1;
     lock(&cz->bridge[start-amb->dir].scnd); 
+    cz->bridge[start-amb->dir].frst=2;
     lock(&bridge_mutex); ++cz->amb_waiting;
-cz->bridge[start-amb->dir].frst=2;
     while(((amb->dir == 1)? cz->dir < 0 : cz->dir > 0)) pthread_cond_wait(&empty, &bridge_mutex);
     cz->dir+=amb->dir; --cz->amb_waiting;
     for(int i = start; i!=end+amb->dir; i+=amb->dir){
@@ -39,8 +39,8 @@ void* CrossSemaphoreCar(void *arg){
     Car* car = (Car*)arg;
     int start = (car->dir==1)? 1 : cz->sz, end = (start==1)? cz->sz : 1;
     lock(&cz->bridge[start-car->dir].scnd);  
-    lock(&bridge_mutex);
     cz->bridge[start-car->dir].frst=1;
+    lock(&bridge_mutex);
     while(cz->amb_waiting || ((car->dir==1)? cz->dir<0 : cz->dir>0) || car->dir != cz->sem) pthread_cond_wait(&empty, &bridge_mutex);
     cz->dir += car->dir;  
     for (int i = start; i!=end+car->dir; i += car->dir) {
