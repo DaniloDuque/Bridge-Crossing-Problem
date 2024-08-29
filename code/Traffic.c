@@ -5,6 +5,16 @@ extern Bridge* cz;
 pthread_mutex_t bridge_mutex;  
 pthread_cond_t empty;  
 
+void *Run_Officer(void *arg){
+    int *ks = (int*)arg, i;
+    while(1){
+        i = ks[0];
+        while(i);
+        i = ks[1];
+        while(i);
+    }return 0;
+}
+
 void *CrossTrafficAmbulance(void *arg){
     Car* amb = (Car*)arg;
     int start = (amb->dir==1)? 1 : cz->sz, end = (start==1)? cz->sz : 1;
