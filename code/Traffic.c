@@ -27,6 +27,7 @@ void* CrossTrafficCar(void *arg) {
     Car* car = (Car*)arg;
     int st = start(car), end = end(car);
     lock(&cz->bridge[st-car->dir].scnd); lock(&bridge_mutex);
+    cz->bridge[st-car->dir].frst=1;
     while(cz->amb_waiting || ((car->dir == 1)? cz->dir<0 : cz->dir>0) || car->dir != cz->sem) wait(&empty, &bridge_mutex);
     (car->dir == 1)? --cz->t1 : --cz->t2;
     cz->dir += car->dir;
@@ -44,6 +45,7 @@ void *CrossTrafficAmbulance(void *arg){
     Car* amb = (Car*)arg;
     int st = start(amb), end = end(amb);
     lock(&cz->bridge[st-amb->dir].scnd); ++cz->amb_waiting;
+    cz->bridge[st-amb->dir].frst=2;
     while((amb->dir==1)? cz->dir<0 : cz->dir>0) wait(&empty, &cz->bridge[st-amb->dir].scnd);
     if(amb->dir == cz->sem) (amb->dir==1)? --cz->t1 : --cz->t2;
     cz->dir+=amb->dir; --cz->amb_waiting;

@@ -46,16 +46,18 @@ void *UITraffic(void * arg){
         usleep(micro/10);
         system("clear");
         printf("+");
-        for (int i = 0; i <= b->sz + 5; ++i) printf("--");
+        for (int i = 0; i <= b->sz + 9; ++i) printf("--");
         printf("-+\n");
         printf("| %d ", b->t1);
+        printf("| %c ", (b->bridge[0].frst==1)? 'C' : (b->bridge[0].frst)? 'A' : ' ');
         printf((b->sem != 1 && !b->amb_waiting)? " " : (b->amb_waiting)? RED " " COLOR_RESET : GREEN " " COLOR_RESET);
         printf(" | ");
         for (int i = 1; i<=b->sz; ++i) printf((b->bridge[i].frst==2)? "A " : (b->bridge[i].frst)? "C " : "_ ");
         printf("| " );
+        printf(" %c |", (b->bridge[b->sz+1].frst==1)? 'C' : (b->bridge[b->sz+1].frst)? 'A' : ' ');
         printf((b->sem != -1 && !b->amb_waiting)? " " : (b->amb_waiting)? RED " " COLOR_RESET : GREEN " " COLOR_RESET);
         printf(" %d |\n+", b->t2);
-        for (int i = 0; i<=b->sz + 5; ++i) printf("--");
+        for (int i = 0; i<=b->sz + 9; ++i) printf("--");
         printf("-+\n");
     }
 }

@@ -39,6 +39,7 @@ void *CrossAmbulance(void *arg){
     Car* amb = (Car*)arg;
     int st = start(amb), end = end(amb);
     lock(&cz->bridge[st-amb->dir].scnd); ++cz->amb_waiting;
+    cz->bridge[st-amb->dir].frst=2;
     while((amb->dir==1)? cz->dir<0 : cz->dir>0) wait(&empty, &cz->bridge[st-amb->dir].scnd);
     cz->dir+=amb->dir; --cz->amb_waiting;
     CrossBridge(amb, st, end, 2);
