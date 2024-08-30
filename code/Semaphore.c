@@ -15,26 +15,6 @@ void *Run_Semaphore(){
     }
 }
 
-void *CrossSemaphoreAmbulance(void *arg){
-    Car* amb = (Car*)arg;
-    int start = (amb->dir==1)? 1 : cz->sz, end = (start==1)? cz->sz : 1;
-    lock(&cz->bridge[start-amb->dir].scnd); 
-    cz->bridge[start-amb->dir].frst=2;
-    lock(&bridge_mutex); ++cz->amb_waiting;
-    while(((amb->dir == 1)? cz->dir < 0 : cz->dir > 0)) pthread_cond_wait(&empty, &bridge_mutex);
-    cz->dir+=amb->dir; --cz->amb_waiting;
-    for(int i = start; i!=end+amb->dir; i+=amb->dir){
-        lock(&cz->bridge[i].scnd);
-        cz->bridge[i-amb->dir].frst=0;
-        unlock(&cz->bridge[i-amb->dir].scnd);
-        cz->bridge[i].frst=2;
-        usleep(micro / amb->v);
-    }cz->dir-=amb->dir; cz->bridge[end].frst=0;
-    if(cz->dir == 0) pthread_cond_broadcast(&empty);
-    unlock(&bridge_mutex); unlock(&cz->bridge[end].scnd);
-    return 0;
-}
-
 void* CrossSemaphoreCar(void *arg){
     Car* car = (Car*)arg;
     int start = (car->dir==1)? 1 : cz->sz, end = (start==1)? cz->sz : 1;
@@ -43,13 +23,8 @@ void* CrossSemaphoreCar(void *arg){
     lock(&bridge_mutex);
     while(cz->amb_waiting || ((car->dir==1)? cz->dir<0 : cz->dir>0) || car->dir != cz->sem) pthread_cond_wait(&empty, &bridge_mutex);
     cz->dir += car->dir;  
-    for (int i = start; i!=end+car->dir; i += car->dir) {
-        lock(&cz->bridge[i].scnd);
-        cz->bridge[i-car->dir].frst=0;
-        unlock(&cz->bridge[i-car->dir].scnd);
-        cz->bridge[i].frst=1;
-        usleep(micro / car->v);
-    }cz->dir -= car->dir;
+    CrossBridge(car, start, end, 1);
+    cz->dir -= car->dir;
     cz->bridge[end].frst = 0;  
     if(cz->dir == 0) pthread_cond_broadcast(&empty);
     unlock(&bridge_mutex); unlock(&cz->bridge[end].scnd); 
@@ -60,7 +35,7 @@ void* SemaphoreCarGenerator(double mu, double l, double u, double p, int d){
     while(1){
         usleep(-mu*log(1-prob())*micro);
         pthread_t t;
-        pthread_create(&t, 0, (prob()<p)? CrossSemaphoreAmbulance : CrossSemaphoreCar, (void*)CreateCar(l, u, p, d));
+        pthread_create(&t, 0, (prob()<p)? CrossAmbulance : CrossSemaphoreCar, (void*)CreateCar(l, u, p, d));
         pthread_detach(t);
     }
 }
