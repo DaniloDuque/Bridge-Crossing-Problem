@@ -49,11 +49,11 @@ void *UITraffic(void * arg){
         for (int i = 0; i <= b->sz + 5; ++i) printf("--");
         printf("-+\n");
         printf("| %d ", b->t1);
-        printf((b->sem != 1)? RED " " COLOR_RESET : GREEN " " COLOR_RESET);
+        printf((b->sem != 1 && !b->amb_waiting)? " " : (b->amb_waiting)? RED " " COLOR_RESET : GREEN " " COLOR_RESET);
         printf(" | ");
         for (int i = 1; i<=b->sz; ++i) printf((b->bridge[i].frst==2)? "A " : (b->bridge[i].frst)? "C " : "_ ");
         printf("| " );
-        printf((b->sem != -1)? RED " " COLOR_RESET : GREEN " " COLOR_RESET);
+        printf((b->sem != -1 && !b->amb_waiting)? " " : (b->amb_waiting)? RED " " COLOR_RESET : GREEN " " COLOR_RESET);
         printf(" %d |\n+", b->t2);
         for (int i = 0; i<=b->sz + 5; ++i) printf("--");
         printf("-+\n");

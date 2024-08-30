@@ -22,7 +22,7 @@ Bridge* init(int n){
     b->t1 = 0;
     b->t2 = 0;
     b->amb_waiting=0;
-    b->sem = 0;
+    b->sem = 1;
     return b;
 }
 

@@ -5,8 +5,8 @@
 #include "Bridge.h"
 
 extern Bridge* cz; 
-pthread_mutex_t bridge_mutex;
-pthread_cond_t empty;
+extern pthread_mutex_t bridge_mutex;
+extern pthread_cond_t empty;
 
 typedef struct{
     int dir;
@@ -37,16 +37,14 @@ void CrossBridge(Car * c, int st, int end, int amb){
 
 void *CrossAmbulance(void *arg){
     Car* amb = (Car*)arg;
-    int start = (amb->dir==1)? 1 : cz->sz, end = (start==1)? cz->sz : 1;
-    lock(&cz->bridge[start-amb->dir].scnd); lock(&bridge_mutex); ++cz->amb_waiting;
-    while((amb->dir == 1) ? cz->dir < 0 : cz->dir > 0) pthread_cond_wait(&empty, &bridge_mutex);
+    int st = start(amb), end = end(amb);
+    lock(&cz->bridge[st-amb->dir].scnd); ++cz->amb_waiting;
+    while((amb->dir==1)? cz->dir<0 : cz->dir>0) wait(&empty, &cz->bridge[st-amb->dir].scnd);
     cz->dir+=amb->dir; --cz->amb_waiting;
-    unlock(&bridge_mutex);
-    CrossBridge(amb, start, end, 2);
-    lock(&bridge_mutex);
+    CrossBridge(amb, st, end, 2);
     cz->dir-=amb->dir; cz->bridge[end].frst=0;
-    if(cz->dir == 0) pthread_cond_broadcast(&empty);
-    unlock(&bridge_mutex); unlock(&cz->bridge[end].scnd);
+    if(cz->dir==0) signal(&empty);
+    unlock(&cz->bridge[end].scnd);
     return 0;
 }
 

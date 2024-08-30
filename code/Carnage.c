@@ -7,16 +7,14 @@ pthread_cond_t empty;
 
 void* CrossCarnageCar(void *arg){
     Car* car = (Car*)arg;
-    int start = (car->dir==1)? 1 : cz->sz, end = (start==1)? cz->sz : 1;
-    lock(&cz->bridge[start-car->dir].scnd); lock(&bridge_mutex); 
-    while(cz->amb_waiting || ((car->dir == 1) ? cz->dir < 0 : cz->dir > 0)) pthread_cond_wait(&empty, &bridge_mutex);
+    int st = start(car), end = end(car);
+    lock(&cz->bridge[st-car->dir].scnd); 
+    while(cz->amb_waiting || ((car->dir == 1)? cz->dir<0 : cz->dir>0)) wait(&empty, &cz->bridge[st-car->dir].scnd);
     cz->dir += car->dir;  
-    unlock(&bridge_mutex);
-    CrossBridge(car, start, end, 1);
-    lock(&bridge_mutex);
+    CrossBridge(car, st, end, 1);
     cz->dir -= car->dir; cz->bridge[end].frst=0;  
-    if (cz->dir == 0) pthread_cond_broadcast(&empty);
-    unlock(&bridge_mutex); unlock(&cz->bridge[end].scnd);
+    if (cz->dir == 0) signal(&empty);
+    unlock(&cz->bridge[end].scnd);
     return 0;
 }
 
