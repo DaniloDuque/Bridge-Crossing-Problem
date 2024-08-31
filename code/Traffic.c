@@ -9,14 +9,13 @@ int id = 0;
 
 void *Run_Traffic() {
     while (1) {
-        DEBUG(id++);
         lock(&bridge_mutex);
         cz->sem = 1;
         cz->t1 = k_i;
-        while (cz->amb_waiting || cz->t1 > 0) wait(&empty, &bridge_mutex);
+        while (cz->amb_waiting || (cz->t1>0)) wait(&empty, &bridge_mutex);
         cz->sem = -1;
         cz->t2 = k_j;
-        while (cz->amb_waiting || cz->t2 > 0) wait(&empty, &bridge_mutex);
+        while (cz->amb_waiting || (cz->t2>0)) wait(&empty, &bridge_mutex);
         unlock(&bridge_mutex);
     }
 }
@@ -24,18 +23,16 @@ void *Run_Traffic() {
 void* CrossTrafficCar(void *arg) {
     Car* car = (Car*)arg;
     int st = start(car), end = end(car);
-    lock(&cz->bridge[st-car->dir].scnd); lock(&bridge_mutex);
+    lock(&cz->bridge[st-car->dir].scnd); 
     cz->bridge[st-car->dir].frst=1;
-    while(cz->amb_waiting || ((car->dir == 1)? cz->dir<0 : cz->dir>0) || car->dir != cz->sem) wait(&empty, &bridge_mutex);
+    while(cz->amb_waiting || ((car->dir == 1)? cz->dir<0 : cz->dir>0) || (car->dir != cz->sem)) wait(&empty, &bridge_mutex);
     (car->dir == 1)? --cz->t1 : --cz->t2;
     cz->dir += car->dir;
-    unlock(&bridge_mutex);
     CrossBridge(car, st, end, 1);
-    lock(&bridge_mutex);
     cz->dir -= car->dir;
     cz->bridge[end].frst = 0;
-    if (cz->dir == 0) broadcast(&empty);
-    unlock(&bridge_mutex); unlock(&cz->bridge[end].scnd);
+    if (cz->dir == 0) signal(&empty);
+    unlock(&cz->bridge[end].scnd);
     return 0;
 }
 
