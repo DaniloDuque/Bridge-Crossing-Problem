@@ -1,8 +1,6 @@
 #include "Car.h"
 #include "Bridge.h"
 
-#define DEBUG(x) (printf("%d\n", x))
-
 extern Bridge* cz;
 pthread_cond_t empty;
 pthread_mutex_t bridge_mutex;
