@@ -9,32 +9,32 @@ Bridge *cz;
 
 void Carnage() {
     cz = init(sz);
-    pthread_t threads[3];
+    thread threads[3];
     domain lft = {1, mu_i, lbv_i, ubv_i, p_i}, rght = {-1, mu_j, lbv_j, ubv_j, p_j};
-    pthread_create(&threads[0], 0, run_generator_Carnage, (void*)&lft);
-    pthread_create(&threads[1], 0, run_generator_Carnage, (void*)&rght);
-    pthread_create(&threads[2], 0, UICarnage, (void*)cz);
-    for (int i = 0; i < 3; i++) pthread_join(threads[i], 0);
+    create(&threads[0], run_generator_Carnage, &lft);
+    create(&threads[1], run_generator_Carnage, &rght);
+    create(&threads[2], UICarnage, cz);
+    for (int i = 0; i < 3; i++) join(threads[i]);
 }
 
 void Semaphore() {
     cz = init(sz);
-    pthread_t threads[4];
+    thread threads[4];
     domain lft = {1, mu_i, lbv_i, ubv_i, p_i}, rght = {-1, mu_j, lbv_j, ubv_j, p_j};
-    pthread_create(&threads[0], 0, Run_Semaphore, 0);
-    pthread_create(&threads[1], 0, run_generator_Semaphore, (void*)&lft);
-    pthread_create(&threads[2], 0, run_generator_Semaphore, (void*)&rght);
-    pthread_create(&threads[3], 0, UISemaphore, (void*)cz);
-    for (int i = 0; i < 4; i++) pthread_join(threads[i], 0);
+    create(&threads[0], run_Semaphore, 0);
+    create(&threads[1], run_generator_Semaphore, &lft);
+    create(&threads[2], run_generator_Semaphore, &rght);
+    create(&threads[3], UISemaphore, cz);
+    for (int i = 0; i < 4; i++) join(threads[i]);
 }
 
 void Traffic() {
     cz = init(sz);
-    pthread_t threads[4];
+    thread threads[4];
     domain lft = {1, mu_i, lbv_i, ubv_i, p_i}, rght = {-1, mu_j, lbv_j, ubv_j, p_j};
-    pthread_create(&threads[0], 0, Run_Traffic, 0);
-    pthread_create(&threads[1], 0, run_generator_Traffic, (void*)&lft);
-    pthread_create(&threads[2], 0, run_generator_Traffic, (void*)&rght);
-    pthread_create(&threads[3], 0, UITraffic, (void*)cz);
-    for (int i = 0; i < 4; i++) pthread_join(threads[i], 0);
+    create(&threads[0], run_Traffic, 0);
+    create(&threads[1], run_generator_Traffic, &lft);
+    create(&threads[2], run_generator_Traffic, &rght);
+    create(&threads[3], UITraffic, cz);
+    for (int i = 0; i < 4; i++) join(threads[i]);
 }

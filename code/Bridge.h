@@ -4,12 +4,11 @@
 #include "util.h"
 
 typedef struct{
-    int frst; pthread_mutex_t scnd;
+    int frst; mutex scnd;
 } mtx;
 
 typedef struct {
     int sem, sz, dir, amb_waiting, t1, t2;
-    pthread_mutex_t access;
     mtx *bridge;
 } Bridge;
 
@@ -18,7 +17,6 @@ Bridge* init(int n){
     b->sz = n; b->dir = 0;
     b->bridge = (mtx*)malloc((n+2)*sizeof(mtx));
     for(int i = 0; i<n+2; ++i) b->bridge[i].frst = 0, pthread_mutex_init(&b->bridge[i].scnd, NULL);
-    pthread_mutex_init(&b->access, 0);
     b->t1 = 0;
     b->t2 = 0;
     b->amb_waiting=0;

@@ -13,6 +13,12 @@
 #define prob() (drand48())
 #define rrand(i, j) ((i)+prob()*((j)-(i)))
 #define micro 1000000
+#define thread pthread_t
+#define mutex pthread_mutex_t
+#define create(t, fun, args) (pthread_create(t, 0, fun, (void*)args))
+#define cond pthread_cond_t
+#define detach(t) (pthread_detach(t))
+#define join(t) (pthread_join(t, 0))
 #define lock(x) (pthread_mutex_lock(x))
 #define unlock(x) (pthread_mutex_unlock(x))
 #define wait(c, m) (pthread_cond_wait(c, m))

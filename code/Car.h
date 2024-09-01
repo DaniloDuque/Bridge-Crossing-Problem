@@ -5,8 +5,8 @@
 #include "Bridge.h"
 
 extern Bridge* cz; 
-extern pthread_mutex_t bridge_mutex;
-extern pthread_cond_t empty;
+extern mutex bridge_mutex;
+extern cond empty;
 
 typedef struct{
     int dir;
@@ -31,7 +31,7 @@ void CrossBridge(Car * c, int st, int end, int amb){
         cz->bridge[i-c->dir].frst=0;
         unlock(&cz->bridge[i-c->dir].scnd);
         cz->bridge[i].frst=amb;
-        usleep(micro/c->v);
+        zzz(micro/c->v);
     }
 }
 

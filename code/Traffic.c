@@ -2,12 +2,11 @@
 #include "Bridge.h"
 
 extern Bridge* cz;
-pthread_cond_t empty;
-pthread_mutex_t bridge_mutex;
+cond empty;
+mutex bridge_mutex;
 extern int k_i, k_j;
-int id = 0;
 
-void *Run_Traffic() {
+void *run_Traffic() {
     while (1) {
         lock(&bridge_mutex);
         cz->sem = 1;
@@ -56,9 +55,9 @@ void *CrossTrafficAmbulance(void *arg){
 void* TrafficCarGenerator(double mu, double l, double u, double p, int d){
     while(1){
         zzz(-mu*log(1-prob())*micro);
-        pthread_t t;
-        pthread_create(&t, 0, (prob()<p)? CrossTrafficAmbulance : CrossTrafficCar, (void*)CreateCar(l, u, p, d));
-        pthread_detach(t);
+        thread t;
+        create(&t, (prob()<p)? CrossTrafficAmbulance : CrossTrafficCar, CreateCar(l, u, p, d));
+        detach(t);
     }
 }
 

@@ -2,11 +2,11 @@
 #include "Bridge.h"
 
 extern Bridge* cz;
-pthread_mutex_t bridge_mutex;  
-pthread_cond_t empty;  
+mutex bridge_mutex;  
+cond empty;  
 extern double t_si, t_sj;
 
-void *Run_Semaphore(){
+void *run_Semaphore(){
     while(1){
         cz->sem = 1;
         zzz(t_si*micro);
@@ -33,9 +33,9 @@ void* CrossSemaphoreCar(void *arg){
 void* SemaphoreCarGenerator(double mu, double l, double u, double p, int d){
     while(1){
         zzz(-mu*log(1-prob())*micro);
-        pthread_t t;
-        pthread_create(&t, 0, (prob()<p)? CrossAmbulance : CrossSemaphoreCar, (void*)CreateCar(l, u, p, d));
-        pthread_detach(t);
+        thread t;
+        create(&t, (prob()<p)? CrossAmbulance : CrossSemaphoreCar, CreateCar(l, u, p, d));
+        detach(t);
     }
 }
 
