@@ -4,7 +4,7 @@
 void *UICarnage(void *arg) {
     Bridge *b = (Bridge *)arg;
     while (1) {
-        usleep(micro / 10);
+        zzz(micro/15);
         system("clear");
         printf("+");
         for (int i = 0; i <= b->sz + 3; ++i) printf("--");
@@ -24,7 +24,7 @@ void *UICarnage(void *arg) {
 void *UISemaphore(void *arg){
     Bridge *b = (Bridge*)arg;
     while(1){
-        usleep(micro/10);
+        zzz(micro/15);
         system("clear");
         printf("+");
         for (int i = 0; i <= b->sz + 6; ++i) printf("--");
@@ -44,7 +44,7 @@ void *UISemaphore(void *arg){
 void *UITraffic(void * arg){
     Bridge *b = (Bridge *)arg;
     while (1) {
-        usleep(micro/10);
+        zzz(micro/15);
         system("clear");
         printf("+");
         for (int i = 0; i <= b->sz + 10; ++i) printf("--");

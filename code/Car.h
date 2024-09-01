@@ -46,6 +46,7 @@ void *CrossAmbulance(void *arg){
     cz->dir-=amb->dir; cz->bridge[end].frst=0;
     if(cz->dir==0) signal(&empty);
     unlock(&cz->bridge[end].scnd);
+    free(amb);
     return 0;
 }
 

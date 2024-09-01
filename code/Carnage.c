@@ -15,12 +15,13 @@ void* CrossCarnageCar(void *arg){
     cz->dir -= car->dir; cz->bridge[end].frst=0;  
     if (cz->dir == 0) signal(&empty);
     unlock(&cz->bridge[end].scnd);
+    free(car);
     return 0;
 }
 
 void* CarnageCarGenerator(double mu, double l, double u, double p, int d){
     while(1){
-        usleep(-mu*log(1-prob())*micro);
+        zzz(-mu*log(1-prob())*micro);
         pthread_t t;
         pthread_create(&t, 0, (prob()<p)? CrossAmbulance : CrossCarnageCar, (void*)CreateCar(l, u, p, d));
         pthread_detach(t);

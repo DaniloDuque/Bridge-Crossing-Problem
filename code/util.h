@@ -26,6 +26,8 @@
 #define start(x) ((x->dir==1)? 1 : cz->sz)
 #define end(x) ((x->dir==1)? cz->sz : 1)
 #define DEBUG(x) (printf("%d\n", x))
+#define min(a, b) ((a) < (b) ? (a) : (b))
+#define zzz(x) (usleep(x))
 
 
 #endif 

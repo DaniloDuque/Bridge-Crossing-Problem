@@ -9,9 +9,9 @@ extern double t_si, t_sj;
 void *Run_Semaphore(){
     while(1){
         cz->sem = 1;
-        usleep(t_si*micro);
+        zzz(t_si*micro);
         cz->sem = -1;
-        usleep(t_sj*micro);
+        zzz(t_sj*micro);
     }
 }
 
@@ -26,12 +26,13 @@ void* CrossSemaphoreCar(void *arg){
     cz->bridge[end].frst = 0;  
     if(cz->dir == 0) broadcast(&empty);
     unlock(&cz->bridge[end].scnd); 
+    free(car);
     return 0;
 }
 
 void* SemaphoreCarGenerator(double mu, double l, double u, double p, int d){
     while(1){
-        usleep(-mu*log(1-prob())*micro);
+        zzz(-mu*log(1-prob())*micro);
         pthread_t t;
         pthread_create(&t, 0, (prob()<p)? CrossAmbulance : CrossSemaphoreCar, (void*)CreateCar(l, u, p, d));
         pthread_detach(t);
