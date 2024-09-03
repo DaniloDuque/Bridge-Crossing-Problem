@@ -9,6 +9,7 @@ void* CrossCarnageCar(void *arg){
     Car* car = (Car*)arg;
     int st = start(car), end = end(car);
     lock(&cz->bridge[st-car->dir].scnd); 
+    cz->bridge[st-car->dir].frst=1;
     while(cz->amb_waiting || ((car->dir == 1)? cz->dir<0 : cz->dir>0)) wait(&empty, &cz->bridge[st-car->dir].scnd);
     cz->dir += car->dir;  
     CrossBridge(car, st, end, 1);
