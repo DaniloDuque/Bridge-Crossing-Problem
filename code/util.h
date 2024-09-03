@@ -10,6 +10,8 @@
 #include <unistd.h>
 #include <semaphore.h>
 
+#define INIT_MUTEX PTHREAD_MUTEX_INITIALIZER
+#define INIT_COND PTHREAD_COND_INITIALIZER
 #define prob() (drand48())
 #define rrand(i, j) ((i)+prob()*((j)-(i)))
 #define micro 1000000

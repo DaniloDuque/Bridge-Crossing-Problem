@@ -1,17 +1,19 @@
 #include "Car.h"
 #include "Bridge.h"
+#include "util.h"
 
 extern Bridge* cz;
-mutex bridge_mutex;  
-cond empty;  
+extern mutex bridge_mutex;  
+extern cond empty;  
 
 void* CrossCarnageCar(void *arg){
     Car* car = (Car*)arg;
     int st = start(car), end = end(car);
-    lock(&cz->bridge[st-car->dir].scnd); 
+    lock(&cz->bridge[st-car->dir].scnd); lock(&bridge_mutex); 
     cz->bridge[st-car->dir].frst=1;
-    while(cz->amb_waiting || ((car->dir == 1)? cz->dir<0 : cz->dir>0)) wait(&empty, &cz->bridge[st-car->dir].scnd);
+    while(cz->amb_waiting || ((car->dir == 1)? cz->dir<0 : cz->dir>0)) wait(&empty, &bridge_mutex);
     cz->dir += car->dir;  
+    unlock(&bridge_mutex);
     CrossBridge(car, st, end, 1);
     cz->dir -= car->dir; cz->bridge[end].frst=0;  
     if (cz->dir == 0) signal(&empty);

@@ -1,11 +1,15 @@
+#include "Car.h"
 #include "UI.c"
 #include "Carnage.c"
 #include "Semaphore.c"
 #include "Traffic.c"
+#include "util.h"
 
 int mode, sz, k_i, k_j;
 double mu_i, mu_j, t_si, t_sj, lbv_i, ubv_i, lbv_j, ubv_j, p_i, p_j;
 Bridge *cz;
+cond empty = INIT_COND;
+mutex bridge_mutex = INIT_MUTEX;
 
 void Carnage() {
     cz = init(sz);
