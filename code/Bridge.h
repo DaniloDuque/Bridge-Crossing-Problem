@@ -17,7 +17,7 @@ Bridge* init(int n){
     b->sz = n; b->dir = 0;
     b->bridge = (mtx*)malloc((n+2)*sizeof(mtx));
     for(int i = 0; i<n+2; ++i) b->bridge[i].frst = 0, pthread_mutex_init(&b->bridge[i].scnd, NULL);
-    b->t1 = 0; b->t2 = 0; b->amb_waiting=0; b->sem = 1;
+    b->t1 = 0; b->t2 = 0; b->amb_waiting=0; b->sem = -1;
     return b;
 }
 

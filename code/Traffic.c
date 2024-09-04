@@ -1,23 +1,34 @@
 #include "Car.h"
 #include "Bridge.h"
+#include "util.h"
 
 extern Bridge* cz;
-cond empty;
-mutex bridge_mutex;
+extern cond empty;
+cond pass = INIT_COND;
+extern mutex bridge_mutex;
+mutex clear = INIT_MUTEX; 
 extern int k_i, k_j;
 
+void reset(){
+    cz->sem*=-1;cz->t1=k_i;cz->t2=k_j;
+}
+
+int id=0;
 void *run_Traffic() {
     while (1) {
-        lock(&bridge_mutex);
-        cz->sem = 1, cz->t1 = k_i, cz->t2=0;
-        while((cz->amb_waiting || (cz->t1>0))){
+        reset();
+        signal(&pass);
+        while(cz->amb_waiting || (cz->t1>0)){
             if(!cz->dir && !cz->amb_waiting && !cz->bridge[0].frst && cz->bridge[cz->sz+1].frst) break;
+            DEBUG(id++);
             wait(&empty, &bridge_mutex);
-        }cz->sem = -1, cz->t2 = k_j, cz->t1=0;
-        while((cz->amb_waiting || (cz->t2>0))) {
+        }reset();
+        signal(&pass);
+        while(cz->amb_waiting || (cz->t2>0)) {
             if(!cz->dir && !cz->amb_waiting && cz->bridge[0].frst && !cz->bridge[cz->sz+1].frst) break;
+            DEBUG(id++);
             wait(&empty, &bridge_mutex);
-        }unlock(&bridge_mutex);
+        }
     }
 }
 
@@ -26,7 +37,7 @@ void* CrossTrafficCar(void *arg) {
     int st = start(car), end = end(car);
     lock(&cz->bridge[st-car->dir].scnd); 
     cz->bridge[st-car->dir].frst=1; 
-    while(cz->amb_waiting || ((car->dir == 1)? cz->dir<0 : cz->dir>0) || (car->dir != cz->sem)) wait(&empty, &bridge_mutex);
+    while(car->dir!=cz->sem) wait(&pass, &bridge_mutex), DEBUG(id++);
     (car->dir == 1)? --cz->t1 : --cz->t2;
     cz->dir += car->dir;
     CrossBridge(car, st, end, 1);
