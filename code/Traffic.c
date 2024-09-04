@@ -37,7 +37,7 @@ void* CrossTrafficCar(void *arg) {
     int st = start(car), end = end(car);
     lock(&cz->bridge[st-car->dir].scnd); 
     cz->bridge[st-car->dir].frst=1; 
-    while(car->dir!=cz->sem) wait(&pass, &bridge_mutex), DEBUG(id++);
+    while(cz->amb_waiting || ((car->dir==1)? cz->t1<=0 : cz->t2<=0) || car->dir!=cz->sem) wait(&pass, &bridge_mutex), DEBUG(id++);
     (car->dir == 1)? --cz->t1 : --cz->t2;
     cz->dir += car->dir;
     CrossBridge(car, st, end, 1);
