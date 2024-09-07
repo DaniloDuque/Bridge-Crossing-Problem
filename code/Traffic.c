@@ -16,19 +16,19 @@ void reset(int i) {
 
 void *run_Traffic() {
     while (1) {
-        reset(1);
         lock(&bridge_mutex);
-        if(cz->dir) wait(&empty, &bridge_mutex);
-        broadcast(&pass);  
+        reset(1);
+        while(cz->dir) wait(&empty, &bridge_mutex);
         while (cz->t1>0){
+            broadcast(&pass);  
             if(!cz->dir && !cz->bridge[0].frst && cz->bridge[cz->sz+1].frst) break;
             wait(&empty, &bridge_mutex);  
         }unlock(&bridge_mutex);
-        reset(0);
         lock(&bridge_mutex);
-        if(cz->dir) wait(&empty, &bridge_mutex);
-        broadcast(&pass);
+        reset(0);
+        while(cz->dir) wait(&empty, &bridge_mutex);
         while(cz->t2>0){
+            broadcast(&pass);  
             if(!cz->dir && cz->bridge[0].frst && !cz->bridge[cz->sz+1].frst) break;
             wait(&empty, &bridge_mutex);  
         }unlock(&bridge_mutex);
@@ -42,7 +42,7 @@ void* EnterTrafficCar(void *arg) {
     cz->bridge[st - car->dir].frst = 1;
     if(!cz->dir) broadcast(&empty);
     lock(&bridge_mutex);
-    while(cz->amb_waiting || ((car->dir == 1)? cz->t1<=0 : cz->t2<=0) || (cz->sem!=car->dir)) wait(&pass, &bridge_mutex);              
+    while(cz->amb_waiting || ((car->dir == 1)? cz->t1<=0 || cz->dir<0 : cz->t2<=0 || cz->dir>0) || (cz->sem!=car->dir)) wait(&pass, &bridge_mutex);              
     cz->dir += car->dir; (car->dir==1)? --cz->t1 : --cz->t2; 
     unlock(&bridge_mutex);  
     CrossBridge(car, st, end, 1);  
@@ -54,7 +54,6 @@ void* EnterTrafficCar(void *arg) {
     return 0;
 }
 
-//Still deadlock
 void* EnterTrafficAmbulance(void *arg) {
     Car* car = (Car*)arg;
     int st = start(car), end = end(car);
@@ -62,7 +61,8 @@ void* EnterTrafficAmbulance(void *arg) {
     cz->bridge[st-car->dir].frst = 2; cz->amb_waiting++;
     while((car->dir==1)? cz->dir<0 : cz->dir>0) wait(&empty, &bridge_mutex);
     if(car->dir==cz->sem) (car->dir==1)? --cz->t1 : --cz->t2;
-    cz->dir += car->dir; --cz->amb_waiting; unlock(&bridge_mutex);  
+    cz->dir += car->dir; --cz->amb_waiting; 
+    unlock(&bridge_mutex);  
     CrossBridge(car, st, end, 2); 
     lock(&bridge_mutex);  
     cz->dir -= car->dir; cz->bridge[end].frst = 0;
