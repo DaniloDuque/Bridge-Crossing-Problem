@@ -6,7 +6,6 @@ extern Bridge* cz;
 extern cond empty;  
 cond pass = INIT_COND;
 extern mutex bridge_mutex;  
-mutex clear = INIT_MUTEX;
 extern int k_i, k_j;
 
 void reset(int i) {
@@ -22,7 +21,7 @@ void *run_Traffic() {
         if(cz->dir) wait(&empty, &bridge_mutex);
         broadcast(&pass);  
         while (cz->t1>0){
-            if(!cz->dir && !cz->amb_waiting && !cz->bridge[0].frst && cz->bridge[cz->sz+1].frst) break;
+            if(!cz->dir && !cz->bridge[0].frst && cz->bridge[cz->sz+1].frst) break;
             wait(&empty, &bridge_mutex);  
         }unlock(&bridge_mutex);
         reset(0);
@@ -30,7 +29,7 @@ void *run_Traffic() {
         if(cz->dir) wait(&empty, &bridge_mutex);
         broadcast(&pass);
         while(cz->t2>0){
-            if(!cz->dir && !cz->amb_waiting && cz->bridge[0].frst && !cz->bridge[cz->sz+1].frst) break;
+            if(!cz->dir && cz->bridge[0].frst && !cz->bridge[cz->sz+1].frst) break;
             wait(&empty, &bridge_mutex);  
         }unlock(&bridge_mutex);
     }
@@ -54,9 +53,6 @@ void* EnterTrafficCar(void *arg) {
     free(car);  
     return 0;
 }
-
-
-
 
 //Still deadlock
 void* EnterTrafficAmbulance(void *arg) {
