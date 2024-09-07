@@ -9,15 +9,15 @@ extern cond empty;
 void* EnterCarnageCar(void *arg) {
     Car* car = (Car*)arg;
     int st = start(car), end = end(car);
-    lock(&cz->bridge[st-car->dir].scnd); lock(&bridge_mutex);  
-    cz->bridge[st-car->dir].frst = 1;
+    lock(&cz->mtx[st-car->dir]); lock(&bridge_mutex);  
+    cz->value[st-car->dir] = 1;
     while(cz->amb_waiting || ((car->dir == 1) ? cz->dir < 0 : cz->dir > 0)) wait(&empty, &bridge_mutex);
     cz->dir += car->dir; unlock(&bridge_mutex);  
     CrossBridge(car, st, end, 1); 
     lock(&bridge_mutex);  
-    cz->dir -= car->dir; cz->bridge[end].frst = 0;
+    cz->dir -= car->dir; cz->value[end] = 0;
     if(!cz->dir) signal(&empty);  
-    unlock(&bridge_mutex); unlock(&cz->bridge[end].scnd);  
+    unlock(&bridge_mutex); unlock(&cz->mtx[end]);  
     free(car);  
     return 0;
 }

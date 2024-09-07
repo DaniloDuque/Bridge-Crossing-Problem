@@ -2,8 +2,6 @@
 #include "Bridge.h"
 #include "util.h"
 
-#include <pthread.h>
-
 extern Bridge* cz;
 extern mutex bridge_mutex;  
 cond change_semaphore = INIT_COND;  
@@ -28,17 +26,17 @@ void *run_Semaphore() {
 void* EnterSemaphoreCar(void *arg) {
     Car* car = (Car*)arg;
     int st = start(car), end = end(car);
-    lock(&cz->bridge[st - car->dir].scnd);  
-    cz->bridge[st - car->dir].frst = 1;
+    lock(&cz->mtx[st - car->dir]);  
+    cz->value[st - car->dir] = 1;
     lock(&bridge_mutex);
     while (cz->amb_waiting || ((car->dir == 1) ? cz->dir < 0 : cz->dir > 0) || (car->dir != cz->sem)) wait(&change_semaphore, &bridge_mutex);
     cz->dir += car->dir;  
     unlock(&bridge_mutex);  
     CrossBridge(car, st, end, 1);  
     lock(&bridge_mutex);  
-    cz->dir -= car->dir; cz->bridge[end].frst = 0;
+    cz->dir -= car->dir; cz->value[end] = 0;
     if (cz->dir == 0) signal(&empty);
-    unlock(&bridge_mutex); unlock(&cz->bridge[end].scnd);  
+    unlock(&bridge_mutex); unlock(&cz->mtx[end]);  
     free(car);  
     return 0;
 }
