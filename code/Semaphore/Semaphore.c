@@ -11,13 +11,13 @@ extern double t_si, t_sj;
 void *run_Semaphore() {
     while (1) {
         lock(&bridge_mutex);  
+        if(!cz->dir) broadcast(&empty);
         cz->sem = 1;
-        broadcast(&change_semaphore);  
         unlock(&bridge_mutex);  
         zzz(t_si * micro);  
         lock(&bridge_mutex);
+        if(!cz->dir) broadcast(&empty);
         cz->sem = -1;
-        broadcast(&change_semaphore);  
         unlock(&bridge_mutex);
         zzz(t_sj * micro);  
     }
@@ -29,13 +29,13 @@ void* EnterSemaphoreCar(void *arg) {
     lock(&cz->mtx[st - car->dir]);  
     cz->value[st - car->dir] = 1;
     lock(&bridge_mutex);
-    while (cz->amb_waiting || ((car->dir == 1) ? cz->dir < 0 : cz->dir > 0) || (car->dir != cz->sem)) wait(&change_semaphore, &bridge_mutex);
+    while(cz->amb_waiting || ((car->dir==1)? cz->dir<0 : cz->dir>0) || (car->dir!=cz->sem)) wait(&empty, &bridge_mutex);
     cz->dir += car->dir;  
     unlock(&bridge_mutex);  
     CrossBridge(car, st, end, 1);  
     lock(&bridge_mutex);  
     cz->dir -= car->dir; cz->value[end] = 0;
-    if (cz->dir == 0) signal(&empty);
+    if (cz->dir == 0) broadcast(&empty);
     unlock(&bridge_mutex); unlock(&cz->mtx[end]);  
     free(car);  
     return 0;
