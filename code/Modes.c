@@ -1,8 +1,8 @@
 #include "Car.h"
-#include "UI.c"
-#include "Carnage.c"
-#include "Semaphore.c"
-#include "Traffic.c"
+#include "UI/UI.c"
+#include "Carnage/Carnage.c"
+#include "Semaphore/Semaphore.c"
+#include "Traffic/Traffic.c"
 #include "util.h"
 
 int mode, sz, k_i, k_j;

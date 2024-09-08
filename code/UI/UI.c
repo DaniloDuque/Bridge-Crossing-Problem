@@ -1,4 +1,4 @@
-#include "Bridge.h"
+#include "../Bridge.h"
 #include "util.h"
 
 void *UICarnage(void *arg){

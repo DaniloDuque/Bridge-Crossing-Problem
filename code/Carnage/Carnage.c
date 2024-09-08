@@ -1,5 +1,5 @@
-#include "Car.h"
-#include "Bridge.h"
+#include "../Car.h"
+#include "../Bridge.h"
 #include "util.h"
 
 extern Bridge* cz;
