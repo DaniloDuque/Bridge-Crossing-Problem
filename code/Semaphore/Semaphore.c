@@ -1,6 +1,6 @@
 #include "../Car.h"
 #include "../Bridge.h"
-#include "util.h"
+#include "../util.h"
 
 extern Bridge* cz;
 extern mutex bridge_mutex;  
